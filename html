@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>Movie Search App</title>
+  
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 0;
+      margin: 0;
+      background-color: #1a1a1a;
+      color: white;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .header {
+      background-color: #1a1a1a;
+      padding: 20px;
+      box-shadow: 0 2px 10px rgba(255, 215, 0, 0.3);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      transition: all 0.3s ease;
+    }
+
+    .header.compact {
+      padding: 10px 20px;
+    }
+
+    h1 {
+      text-align: center;
+      color: #f35beb;
+      margin: 0;
+      
+      transition: all 0.3s ease;
+    }
+
+    .header.compact h1 {
+      font-size: 30px;
+      margin-bottom: 10px;
+    }
+
+    .center-wrapper {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .center-wrapper.hidden {
+      display: none;
+    }
+
+    .center-wrapper h1 {
+      font-size: 48px;
+      margin-bottom: 30px;
+    }
+
+    .search-container {
+      text-align: center;
+      margin: 0;
+      transition: all 0.3s ease;
+    }
+
+    .header .search-container {
+      display: none;
+    }
+
+    .header.compact .search-container {
+      display: block;
+    }
+
+    #wei {
+      padding: 10px;
+      width: 300px;
+      font-size: 16px;
+      border: 2px solid #f35beb;
+      border-radius: 5px;
+    }
+
+    #weiTop {
+        width: 250px;  
+        padding: 8px;  
+    }
+
+    button {
+      padding: 10px 30px;
+      font-size: 16px;
+      background-color: #f35beb;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-left: 10px;
+    }
+
+    button:hover {
+      background-color: #f35beb;
+    }
+
+    #op {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 20px;
+      padding: 30px 20px;
+      flex: 1;
+    }
+
+    .cards {
+      width: 200px;
+      border: 1px solid #f35beb;
+      text-align: center;
+      background-color: rgb(74, 81, 83);
+      box-shadow: #f35beb 5px 5px;
+      font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+      padding: 15px;
+      border-radius: 8px;
+    }
+
+    .cards h2 {
+      font-size: 25px;
+      margin: 10px 0;
+      color: #ffffff;
+      font-family:'Rosehot';
+      min-height: 40px;
+    }
+
+    .cards h3 {
+      font-size: 14px;
+      margin: 10px 0;
+    }
+
+    .cards img {
+      width: 100%;
+      height: auto;
+      border-radius: 5px;
+      margin: 10px 0;
+    }
+
+    .cards p {
+      font-size: 12px;
+      text-align: left;
+      max-height: 150px;
+      overflow-y: auto;
+      line-height: 1.4;
+    }
+
+    .rating {
+      background-color: #f35beb;
+      color: #1a1a1a;
+      padding: 5px 10px;
+      border-radius: 5px;
+      font-weight: bold;
+      display: inline-block;
+      margin: 10px 0;
+      font-size: 16px;
+    }
+
+    .rating.high {
+      background-color: #4caf50;
+      color: white;
+    }
+
+    .rating.medium {
+      background-color: #ff9800;
+      color: white;
+    }
+
+    .rating.low {
+      background-color: #f44336;
+      color: white;
+    }
+
+    .vote-count {
+      font-size: 11px;
+      color: #ccc;
+      margin-top: 5px;
+    }
+
+    hr {
+      border: 1px solid #f35beb;
+    }
+
+    .loading {
+      text-align: center;
+      font-size: 18px;
+      color: #f35beb;
+    }
+
+    .error {
+      text-align: center;
+      color: #ff6b6b;
+      font-size: 16px;
+    }
+  </style>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+</head>
+
+<body>
+  <!-- Centered landing page -->
+  <div class="center-wrapper" id="centerWrapper">
+    <h1>Movie Info Search</h1>
+    <div class="search-container">
+      <input type="text" placeholder="Search for a movie..." id="wei">
+      <button onclick="jing()">Search</button>
+    </div>
+  </div>
+
+  <!-- Compact header (hidden initially) -->
+  <div class="header" id="header" style="display: none;">
+    <h1>Movie Info Search</h1>
+    <div class="search-container">
+      <input type="text" placeholder="Search for a movie..." id="weiTop">
+      <button onclick="jingFromTop()">Search</button>
+    </div>
+  </div>
+  
+  <div id="op"></div>
+
+  <script>
+    function performSearch(searchValue) {
+      const op = document.getElementById("op");
+      const wei = searchValue.trim();
+
+      if (!wei) {
+        op.innerHTML = '<p class="error">Please enter a movie name!</p>';
+        return;
+      }
+
+      // Hide center wrapper and show header on first search
+      const centerWrapper = document.getElementById("centerWrapper");
+      const header = document.getElementById("header");
+      
+      if (centerWrapper.style.display !== "none") {
+        centerWrapper.style.display = "none";
+        header.style.display = "block";
+        setTimeout(() => {
+          header.classList.add("compact");
+        }, 10);
+      }
+
+      op.innerHTML = '<p class="loading">Loading...</p>';
+
+      // Using async AJAX call (modern approach)
+      $.ajax({
+        url: `https://api.themoviedb.org/3/search/movie?api_key=88892ad80656f3a2257a48524e58c860&query=${encodeURIComponent(wei)}`,
+        method: 'GET',
+        success: function(roy) {
+          let build = "";
+
+          if (roy.results.length === 0) {
+            op.innerHTML = '<p class="error">No movies found. Try another search!</p>';
+            return;
+          }
+
+          for (let i = 0; i < roy.results.length; i++) {
+            const name = roy.results[i].original_title;
+            const dis = roy.results[i].overview || "No description available";
+            const date = roy.results[i].release_date || "Unknown";
+            const pic = roy.results[i].poster_path;
+            const rating = roy.results[i].vote_average || 0;
+            const voteCount = roy.results[i].vote_count || 0;
+
+            // Determine rating color based on score
+            let ratingClass = 'low';
+            if (rating >= 7) {
+              ratingClass = 'high';
+            } else if (rating >= 5) {
+              ratingClass = 'medium';
+            }
+
+            build += `<div class="cards">`;
+            build += `<h2>${name}</h2>`;
+            build += `<div class="rating ${ratingClass}">⭐ ${rating.toFixed(1)}/10</div>`;
+            build += `<div class="vote-count">(${voteCount.toLocaleString()} votes)</div>`;
+            build += `<h3>Released: ${date}</h3>`;
+            build += `<hr>`;
+            
+            if (pic) {
+              build += `<img src="https://image.tmdb.org/t/p/w185${pic}" alt="${name} poster">`;
+            } else {
+              build += `<img src="https://via.placeholder.com/185x278?text=No+Image" alt="No poster available">`;
+            }
+            
+            build += `<p>${dis}</p>`;
+            build += `</div>`;
+          }
+
+          op.innerHTML = build;
+        },
+        error: function() {
+          op.innerHTML = '<p class="error">Error loading movies. Please try again!</p>';
+        }
+      });
+    }
+
+    function jing() {
+      const searchValue = document.getElementById("wei").value;
+      performSearch(searchValue);
+    }
+
+    function jingFromTop() {
+      const searchValue = document.getElementById("weiTop").value;
+      performSearch(searchValue);
+    }
+
+    // Allow Enter key to trigger search
+    document.addEventListener('DOMContentLoaded', function() {
+      document.getElementById('wei').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+          jing();
+        }
+      });
+    });
+  </script>
+</body>
+
+</html>
