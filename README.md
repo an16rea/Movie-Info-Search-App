@@ -1,7 +1,7 @@
 # Movie-Info-Search-App
 
 🎬 Movie Search App
-A sleek, modern web application for searching and discovering movies with real-time data from TheMovieDB API. Features a beautiful UI with color-coded ratings, smooth transitions, and an intuitive user experience.
+A sleek, modern web application for searching and discovering movies with real-time data from TheMovieDB API. Features a beautiful UI with color-coded ratings, smooth transitions, an intuitive user experience, and finding movies so much easier!
 <img width="1849" height="925" alt="image" src="https://github.com/user-attachments/assets/1076b18d-2b69-4815-82af-db4cfd69a417" />
 <img width="1858" height="927" alt="image" src="https://github.com/user-attachments/assets/55525c12-94ac-43f2-bc83-63d49e8b209d" />
 <img width="1868" height="928" alt="image" src="https://github.com/user-attachments/assets/722146a9-4f68-46f7-ba86-a7af8b264433" />
